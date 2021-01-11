@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE AirSync PUBLIC "-//AIRSYNC//DTD AirSync//EN" "http://www.microsoft.com/">
+<Settings>
+<Oof>
+<Get>
+<BodyType>
+'text'
+</BodyType>
+</Get>
+</Oof>
+</Settings>

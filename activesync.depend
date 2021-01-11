@@ -1,0 +1,54 @@
+# depslib dependency file v1.0
+1610308542 source:/home/mihai/projects/activesync/activesync/main.cpp
+	<iostream>
+	<string>
+	<fstream>
+	<curl/curl.h>
+	<string.h>
+	<stdio.h>
+	"auth.h"
+	"xml2wb.h"
+	"wb2xml.h"
+	"command.h"
+	<wbxml.h>
+
+1598772607 source:/home/mihai/projects/activesync/activesync/requests/method.cpp
+	"method.h"
+
+1598772607 /home/mihai/projects/activesync/activesync/requests/method.h
+
+1604130020 source:/home/mihai/projects/activesync/activesync/comands.cpp
+	"comands.h"
+
+1604130020 /home/mihai/projects/activesync/activesync/comands.h
+
+1604166392 source:/home/mihai/projects/activesync/activesync/auth.cpp
+
+1604166228 /home/mihai/projects/activesync/activesync/auth.h
+
+1610308306 source:/home/mihai/projects/activesync/activesync/command.cpp
+	"command.h"
+	<stdio.h>
+	<iostream>
+	<ctime>
+
+1608925866 /home/mihai/projects/activesync/activesync/command.h
+
+1608384317 source:/home/mihai/projects/activesync/activesync/xml2wb.c
+	<wbxml.h>
+	<wbxml_conv.h>
+
+1608385269 /home/mihai/projects/activesync/activesync/xml2wb.h
+
+1610312387 source:/home/mihai/projects/activesync/activesync/xml2wb.cpp
+	<wbxml.h>
+	<wbxml_conv.h>
+
+1610312155 source:/home/mihai/projects/activesync/activesync/wb2xml.cpp
+	<wbxml.h>
+	<wbxml_conv.h>
+	<wbxml_charset.h>
+
+1610218497 /home/mihai/projects/activesync/activesync/wb2xml.h
+	<wbxml.h>
+
