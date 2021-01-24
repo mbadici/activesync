@@ -9,44 +9,11 @@
 #include "wb2xml.h"
 #include "command.h"
 #include <wbxml.h>
-
+#include "logging.h"
 #define DEBUGLOG
 using namespace std;
-void as_log(char* logstring)
-{
-    ofstream logfile;
-  logfile.open ("/home/mihai/projects/activesync/activesync/log", std::ios::app);
-if(logstring !=NULL)
-    {
 
-    logfile<< logstring;
-     }
-else{ logfile <<"null string"; }
-  logfile <<"\n";
 
-}
-
-void as_log_data(char* logstring)
-//log to "log" file for debugging purposes
-{
-    int i,count;
-ofstream logfile;
-  logfile.open ("/home/mihai/projects/activesync/activesync/datalog", std::ios::app);
-
-  if(logstring !=NULL)
-    {
-    //count=strlen(logstring);
-   count=200;
-   for(i=0;i<count;i++){
-    logfile.write(&logstring[i],sizeof(char));
-    }
-  }
-  else{ logfile <<"null string";}
-  logfile.write("\n",2);
-
-  logfile.close();
-
-}
 
 char *answ( char *cmd)
 
@@ -60,6 +27,8 @@ char *answ( char *cmd)
      if(!strcmp(cmd,"Search")) return req.Search();
      if(!strcmp(cmd,"Settings")) return req.Settings();
      if(!strcmp(cmd,"Options")) return req.Options();
+     if(!strcmp(cmd,"Provision")) return req.Provision();
+     if(!strcmp(cmd,"Header")) return req.Header();
 
      return "no";
 }
@@ -69,6 +38,7 @@ char *answ( char *cmd)
 extern char **environ;
 int main()
 {
+
 char *len_;
 int len,count;
 char *postdata;
@@ -76,7 +46,8 @@ char *cmd;
 char *deviceid;
 char *username;
 cmd=(char*)malloc(sizeof(char*));
-char *amethod, *response;
+char *amethod;
+wbpair response;
 WB_UTINY* poststring;
 const string ENV[ 24 ] = {
    "COMSPEC", "DOCUMENT_ROOT", "GATEWAY_INTERFACE",
@@ -128,9 +99,11 @@ if( !strcmp(amethod,"OPTIONS"))
         }
 
 // there are only headers here, no body
-cout << "Content-type: text/html\r\n" ;
-cout << answ("Options");
-cout <<"\r\n";
+
+cout << answ("Options")<<"\r\n";
+
+as_log(answ("Options"));
+
 }
 
 else{
@@ -157,11 +130,9 @@ if( !strcmp(amethod,"POST"))
 poststring[count]='\0';
 
 
- as_log_data((char*) poststring);
+// as_log_data((char*) poststring);
 
 as_log((char*)wb2xml(poststring,count));
-//strcpy(postdata,"j-//AIRSYNC//DTD AirSync//ENVN1K2NW1\0");
-//as_log((char*)wb2xml((unsigned char*)postdata));
 
  postdata=getenv("QUERY_STRING");
 #ifdef DEBUGLOG
@@ -186,12 +157,26 @@ as_log(cmd);
 #endif // DEBUGLOG
 
 //cout << "Status:200 OK\n" ;
-cout << "Content-type: text/vnd.ms-sync.wbxml\n" ;
+
+as_log("answer:");
+//log the answer as xml
+as_log(answ(cmd));
+cout<< answ("Header");
+response= xml2wb(answ(cmd));
+cout << "Content-Length: " << response.len <<"\r\n";
+cout << "Content-type: application/vnd.ms-sync.wbxml\r\n" ;
 cout <<"\r\n";
-response=answ(cmd);
-as_log(response);
-cout << xml2wb(response);
-cout <<"\n";
+
+//ifstream dfile;
+//dfile.open ("foldersync.wbxml", std::ios::app);
+//dfile.read(postdata,response.len);
+fwrite(response.str, sizeof(WB_UTINY), response.len, stdout);
+cout <<"\r\n";
+
+//if(!strcmp(cmd,"FolderSync"))
+    {
+    as_log_data((char *)response.str,response.len);
+    }
 }
 }
 }

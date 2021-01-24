@@ -1,20 +1,29 @@
 
 #include <wbxml.h>
 #include <wbxml_conv.h>
-
-unsigned char* xml2wb(char* answer)
+#include <iostream>
+#include "logging.h"
+#include "xml2wb.h"
+using namespace std;
+//struct wbpair {
+//int len;
+//WB_UTINY *str;
+//} ;
+wbpair xml2wb(char* answer)
 {
 WBXMLParser *wbxml_parser = NULL;
     WB_UTINY *wbxml = NULL, *xml=NULL;
     WB_ULONG  wbxml_len = 0;
+    wbpair wbxmlp;
     WB_LONG  xml_len = 0, total = 0;
     WBXMLError ret = WBXML_OK;
     WBXMLGenWBXMLParams params;
 
     /* Init Default Parameters */
     params.wbxml_version = WBXML_VERSION_13;
-    params.use_strtbl = TRUE;
-    params.keep_ignorable_ws = TRUE;
+    params.use_strtbl = FALSE;
+    params.keep_ignorable_ws = FALSE;
+    params.produce_anonymous=TRUE;
 
 
       total += strlen(answer);
@@ -26,10 +35,14 @@ WBXMLParser *wbxml_parser = NULL;
                                    fprintf(stderr, "xml2wbxml failed: %s\n", wbxml_errors_string(ret));
                                     }
             else {
-                  if (fwrite(wbxml, sizeof(WB_UTINY), wbxml_len, stdout) < wbxml_len)
-                  fprintf(stderr, "Error while writing to file: %s\n", "stdout");
+                  //cout << "Content-Length:" <<xml_len<<"\r\n";
+                   //cout << "\r\n";
+               //   if (fwrite(wbxml, sizeof(WB_UTINY), wbxml_len, stdout) < wbxml_len)
+               //   fprintf(stderr, "Error while writing to file: %s\n", "stdout");
 
                 }
 
-                return(wbxml);
+                wbxmlp.len=wbxml_len;
+                wbxmlp.str=wbxml;
+                return(wbxmlp);
 };

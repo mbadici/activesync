@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1610308542 source:/home/mihai/projects/activesync/activesync/main.cpp
+1611492251 source:/home/mihai/projects/activesync/activesync/main.cpp
 	<iostream>
 	<string>
 	<fstream>
@@ -11,6 +11,7 @@
 	"wb2xml.h"
 	"command.h"
 	<wbxml.h>
+	"logging.h"
 
 1598772607 source:/home/mihai/projects/activesync/activesync/requests/method.cpp
 	"method.h"
@@ -26,23 +27,27 @@
 
 1604166228 /home/mihai/projects/activesync/activesync/auth.h
 
-1610308306 source:/home/mihai/projects/activesync/activesync/command.cpp
+1611492490 source:/home/mihai/projects/activesync/activesync/command.cpp
 	"command.h"
 	<stdio.h>
 	<iostream>
 	<ctime>
 
-1608925866 /home/mihai/projects/activesync/activesync/command.h
+1611481386 /home/mihai/projects/activesync/activesync/command.h
 
 1608384317 source:/home/mihai/projects/activesync/activesync/xml2wb.c
 	<wbxml.h>
 	<wbxml_conv.h>
 
-1608385269 /home/mihai/projects/activesync/activesync/xml2wb.h
+1611079088 /home/mihai/projects/activesync/activesync/xml2wb.h
+	<wbxml.h>
 
-1610312387 source:/home/mihai/projects/activesync/activesync/xml2wb.cpp
+1611493301 source:/home/mihai/projects/activesync/activesync/xml2wb.cpp
 	<wbxml.h>
 	<wbxml_conv.h>
+	<iostream>
+	"logging.h"
+	"xml2wb.h"
 
 1610312155 source:/home/mihai/projects/activesync/activesync/wb2xml.cpp
 	<wbxml.h>
@@ -51,4 +56,11 @@
 
 1610218497 /home/mihai/projects/activesync/activesync/wb2xml.h
 	<wbxml.h>
+
+1611078252 source:/home/mihai/projects/activesync/activesync/logging.cpp
+	<iostream>
+	<string>
+	<fstream>
+
+1611078252 /home/mihai/projects/activesync/activesync/logging.h
 

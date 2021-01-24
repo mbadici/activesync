@@ -7,22 +7,35 @@ using namespace std;
    string ans;
 
     //ctor
+char* command::Header(){
+             answer=(char*) "Server: Apache\r\n"
+             "MS-ASProtocolCommands: Sync,SendMail,SmartForward,SmartReply,GetAttachment,GetHierarchy,"
+          "CreateCollection,DeleteCollection,MoveCollection,FolderSync,FolderCreate,"
+          "FolderDelete,FolderUpdate,MoveItems,GetItemEstimate,MeetingResponse,Search,"
+          "Settings,Ping,ItemOperations,ResolveRecipients,ValidateCert\r\n"
+        "MS-Server-ActiveSync: 12.1\r\n";
+           return answer;
+}
+
 char* command::Options(){
 
      time_t now = time(0);
 
    // convert now to string form
-         string dt = ctime(&now);
-         ans= "Server: Apache\r\n"
+        // string dt = ctime(&now);
+         answer= u8"Server: Apache\r\n"
           "MS-Server-ActiveSync: 14.00.0536.000\r\n"
           "MS-ASProtocolVersions: 2.0,2.1,2.5,12.0,12.1\r\n"
           "MS-ASProtocolCommands: Sync,SendMail,SmartForward,SmartReply,GetAttachment,GetHierarchy,"
           "CreateCollection,DeleteCollection,MoveCollection,FolderSync,FolderCreate,"
           "FolderDelete,FolderUpdate,MoveItems,GetItemEstimate,MeetingResponse,Search,"
           "Settings,Ping,ItemOperations,ResolveRecipients,ValidateCert\r\n"
-          "Public: OPTIONS,POST\r\nDate: ";
-          ans=ans+dt+"Content-Length: 0\r\n";
-           return((char *)ans.c_str());
+          "Public: OPTIONS,POST\r\n"
+          "Content-type: text/html; charset=UTF-8\r\nDate:"
+          //ans=ans+dt+
+          "Content-Length: 0\r\n";
+           //return((char *)ans.c_str());
+           return answer;
        }
 
 
@@ -31,13 +44,13 @@ char* command::Settings(){
 
 
           answer =(char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-          "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\" "
+          "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
           "<Settings xmlns=\"http://synce.org/formats/airsync_wm5/settings\">"
           "<Status>1</Status>"
           "<Oof>"
-          "<Status/>"
+  //        "<Status/>"
           "<Get>"
-          "<OofState>0</OofState>"
+          "<OofState>1</OofState>"
           "</Get>"
           "</Oof>"
           "</Settings>";
@@ -49,19 +62,51 @@ char* command::Settings(){
 
 }
 
-char* command::FolderSync(){
+   char* command::Provision(){
+
 
 
           answer =(char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-          "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\" "
-           "\"http://www.microsoft.com/\">"
-                   "<FolderSync>"
-                    "<Status>0</Status>"
-                    "<SyncKey>0</SyncKey>"
-                    "<Changes>"
-                    "<Count>1</Count>"
-                    "</Changes>"
-                    "</FolderSync>";
+          "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
+          "<Provision xmlns=\"uri:Provision\" xmlns:Settings=\"uri:Settings\">"
+          "<DeviceInformation xmlns=\"uri:Settings\">"
+           "<Set>"
+           "<Model>SM-M215F</Model>"
+           "<FriendlyName>SM-M215F</FriendlyName>"
+           "<OS>Android 10</OS>"
+           "<UserAgent>Android-Mail/2020.11.29.346182102.Release</UserAgent>"
+           "</Set>"
+           "</DeviceInformation>"
+           "<Policies>"
+           "<Policy>"
+           "<PolicyType>MS-EAS-Provisioning-WBXML</PolicyType>"
+           "</Policy>"
+           "</Policies>"
+           "</Provision>";
+
+      return answer;
+
+
+}
+
+
+
+char* command::FolderSync(){
+       answer =(char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+ "<!DOCTYPE ACTIVESYNC PUBLIC \"-//ACTIVESYNC//DTD ACTIVESYNC//EN\"  \"http://www.microsoft.com/\">"
+ "<FolderSync>"
+      "<Status>1</Status>"
+      "<SyncKey>1</SyncKey>"
+      "<Changes>"
+      "<Count>1</Count>"
+      "<Add>"
+      "<ServerId>Inbox</ServerId>"
+      "<ParentId>0</ParentId>"
+      "<Name>Inbox</Name>"
+    "</Add>"
+    "</Changes>"
+"</FolderSync>";
+
       return answer;
 
 
@@ -70,7 +115,7 @@ char* command::FolderSync(){
 
 char* command::Search(){
 
-          answer =(char*)"<?xml version=\"1.0\"?>"
+  /*        answer =(char*)"<?xml version=\"1.0\"?>"
     "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\" \"http://www.microsoft.com/\">"
     "<Search xmlns=\"http://synce.org/formats/airsync_wm5/search\">"
     "<Status>1</Status>"
@@ -173,9 +218,26 @@ char* command::Search(){
   "</Response>"
    "</Search>";
 
-
-
-
+*/
+ answer =(char*)"<?xml version=\"1.0\"?>"
+    "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\" \"http://www.microsoft.com/\">"
+    "<Search xmlns=\"http://synce.org/formats/airsync_wm5/search\">"
+    "<Status>1</Status>"
+    "<Response>"
+    "<Store>"
+    "<Status>1</Status>"
+    "<Result>"
+      "<Class xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">Contacts/Class>"
+    "<LongId>RgAAAADi22n%2b5K6eSoH%2bdzl9mrUlBwAiJdrFeosuS5FQPukoeMhpAH7xbHCsAAAiJdrFeosuS5FQPukoeMhpAH7zrksSAAAP</LongId>"
+    "<CollectionId xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">3</CollectionId>"
+    "<Properties>"
+    "<displayname> costel </displayname>"
+    "</Properties>"
+    "</Result>"
+ "<Total>1</Total>"
+  "</Store>"
+  "</Response>"
+   "</Search>";
        //     cout << answer <<"\n";
       return answer;
 

@@ -5,9 +5,11 @@
 class command
 {
     public:
+        char* Header();
         char* Settings();
         char* Options();
         char* FolderSync();
+        char* Provision();
         char* Search();
         void Sync();
 

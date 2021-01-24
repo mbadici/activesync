@@ -46,6 +46,8 @@
 		<Unit filename="cmd.parser.h" />
 		<Unit filename="command.cpp" />
 		<Unit filename="command.h" />
+		<Unit filename="logging.cpp" />
+		<Unit filename="logging.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="requests/method.cpp" />
 		<Unit filename="requests/method.h" />
