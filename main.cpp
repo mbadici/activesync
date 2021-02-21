@@ -15,15 +15,16 @@ using namespace std;
 
 
 
-char *answ( char *cmd)
+char *answ( char *cmd, char* deviceid,char* xml)
 
 //try to implement a switch/case to invoke the comand
 
 {
 
 
+
     command req;
-    if(!strcmp(cmd,"FolderSync")) return req.FolderSync();
+    if(!strcmp(cmd,"FolderSync")) return req.FolderSync(deviceid, xml);
      if(!strcmp(cmd,"Search")) return req.Search();
      if(!strcmp(cmd,"Settings")) return req.Settings();
      if(!strcmp(cmd,"Options")) return req.Options();
@@ -45,6 +46,7 @@ char *postdata;
 char *cmd;
 char *deviceid;
 char *username;
+char *xml;
 cmd=(char*)malloc(sizeof(char*));
 char *amethod;
 wbpair response;
@@ -100,9 +102,9 @@ if( !strcmp(amethod,"OPTIONS"))
 
 // there are only headers here, no body
 
-cout << answ("Options")<<"\r\n";
+cout << answ("Options", deviceid,NULL)<<"\r\n";
 
-as_log(answ("Options"));
+as_log(answ("Options",deviceid,NULL));
 
 }
 
@@ -131,8 +133,8 @@ poststring[count]='\0';
 
 
 // as_log_data((char*) poststring);
-
-as_log((char*)wb2xml(poststring,count));
+xml=(char*) wb2xml(poststring,count);
+as_log(xml);
 
  postdata=getenv("QUERY_STRING");
 #ifdef DEBUGLOG
@@ -160,16 +162,13 @@ as_log(cmd);
 
 as_log("answer:");
 //log the answer as xml
-as_log(answ(cmd));
-cout<< answ("Header");
-response= xml2wb(answ(cmd));
+as_log(answ(cmd,deviceid,xml));
+cout<< answ("Header",deviceid,xml);
+response= xml2wb(answ(cmd,deviceid,xml));
 cout << "Content-Length: " << response.len <<"\r\n";
 cout << "Content-type: application/vnd.ms-sync.wbxml\r\n" ;
 cout <<"\r\n";
 
-//ifstream dfile;
-//dfile.open ("foldersync.wbxml", std::ios::app);
-//dfile.read(postdata,response.len);
 fwrite(response.str, sizeof(WB_UTINY), response.len, stdout);
 cout <<"\r\n";
 

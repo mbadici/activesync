@@ -5,7 +5,7 @@ using namespace std;
 void as_log(char* logstring)
 {
     ofstream logfile;
-  logfile.open ("/home/mihai/projects/activesync/activesync/log", std::ios::app);
+  logfile.open ("/home/mihai/projects/activesync/activesync/log", std::ios::out | std::ios::app);
 if(logstring !=NULL)
     {
 

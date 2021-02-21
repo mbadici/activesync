@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <iostream>
 #include <ctime>
+#include "state.h"
 using namespace std;
    char* answer;
    string ans;
-
+    state db;
     //ctor
 char* command::Header(){
              answer=(char*) "Server: Apache\r\n"
@@ -91,21 +92,35 @@ char* command::Settings(){
 
 
 
-char* command::FolderSync(){
+char* command::FolderSync(char* device,  char* poststring){
+      int key;
+       if((key=db.rd(device,"FolderSync")) <0)
+       {
+           //first sync
+           key=1;
+           db.wr(device,"FolderSync",key);
+       }
+       else
+       {
+           //already sinced
+           db.wr(device,"FolderSync",key);
+
+
+       }
        answer =(char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
- "<!DOCTYPE ACTIVESYNC PUBLIC \"-//ACTIVESYNC//DTD ACTIVESYNC//EN\"  \"http://www.microsoft.com/\">"
- "<FolderSync>"
-      "<Status>1</Status>"
-      "<SyncKey>1</SyncKey>"
-      "<Changes>"
-      "<Count>1</Count>"
-      "<Add>"
-      "<ServerId>Inbox</ServerId>"
-      "<ParentId>0</ParentId>"
-      "<Name>Inbox</Name>"
-    "</Add>"
-    "</Changes>"
-"</FolderSync>";
+        "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
+  "<FolderSync>"
+      " <Status>1</Status>"
+      " <SyncKey>1</SyncKey>"
+      " <Changes>"
+      "   <Count>1</Count>"
+      "   <Add>"
+      "   <ServerId>Inbox</ServerId>"
+      "   <ParentId>0</ParentId>"
+      "   <Name>Inbox</Name>"
+      "  </Add>"
+      " </Changes>"
+   "</FolderSync>";
 
       return answer;
 

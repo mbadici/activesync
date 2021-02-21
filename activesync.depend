@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1611492251 source:/home/mihai/projects/activesync/activesync/main.cpp
+1613857709 source:/home/mihai/projects/activesync/activesync/main.cpp
 	<iostream>
 	<string>
 	<fstream>
@@ -27,13 +27,14 @@
 
 1604166228 /home/mihai/projects/activesync/activesync/auth.h
 
-1611492490 source:/home/mihai/projects/activesync/activesync/command.cpp
+1613942846 source:/home/mihai/projects/activesync/activesync/command.cpp
 	"command.h"
 	<stdio.h>
 	<iostream>
 	<ctime>
+	"state.h"
 
-1611481386 /home/mihai/projects/activesync/activesync/command.h
+1613942846 /home/mihai/projects/activesync/activesync/command.h
 
 1608384317 source:/home/mihai/projects/activesync/activesync/xml2wb.c
 	<wbxml.h>
@@ -57,10 +58,21 @@
 1610218497 /home/mihai/projects/activesync/activesync/wb2xml.h
 	<wbxml.h>
 
-1611078252 source:/home/mihai/projects/activesync/activesync/logging.cpp
+1613857709 source:/home/mihai/projects/activesync/activesync/logging.cpp
 	<iostream>
 	<string>
 	<fstream>
 
 1611078252 /home/mihai/projects/activesync/activesync/logging.h
+
+1612708035 source:/home/mihai/projects/activesync/activesync/mailbox.cpp
+
+1613843201 source:/home/mihai/projects/activesync/activesync/state.cpp
+	"state.h"
+	<iostream>
+	<string.h>
+	<string>
+	<fstream>
+
+1613770159 /home/mihai/projects/activesync/activesync/state.h
 

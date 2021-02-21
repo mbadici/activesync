@@ -8,7 +8,7 @@ class command
         char* Header();
         char* Settings();
         char* Options();
-        char* FolderSync();
+        char* FolderSync(char* device, char* poststring);
         char* Provision();
         char* Search();
         void Sync();

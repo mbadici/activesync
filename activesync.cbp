@@ -48,9 +48,16 @@
 		<Unit filename="command.h" />
 		<Unit filename="logging.cpp" />
 		<Unit filename="logging.h" />
+		<Unit filename="mailbox">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="mailbox.cpp" />
+		<Unit filename="mailbox.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="requests/method.cpp" />
 		<Unit filename="requests/method.h" />
+		<Unit filename="state.cpp" />
+		<Unit filename="state.h" />
 		<Unit filename="wb2xml.cpp" />
 		<Unit filename="wb2xml.h" />
 		<Unit filename="xml2wb.cpp" />
