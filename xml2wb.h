@@ -1,9 +1,9 @@
 #include <wbxml.h>
 
 struct wbpair {
-int len;
+WB_LONG len;
 WB_UTINY *str;
 } ;
 
-wbpair xml2wb(char*);
+wbpair  xml2wb( unsigned char* );
 

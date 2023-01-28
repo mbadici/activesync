@@ -9,13 +9,14 @@
 #include "wb2xml.h"
 #include "command.h"
 #include <wbxml.h>
+#include <ctime>
 #include "logging.h"
 #define DEBUGLOG
 using namespace std;
 
 
 
-char *answ( char *cmd, char* deviceid,char* xml)
+unsigned char *answ( char *cmd, char* deviceid,unsigned char* xml)
 
 //try to implement a switch/case to invoke the comand
 
@@ -24,14 +25,15 @@ char *answ( char *cmd, char* deviceid,char* xml)
 
 
     command req;
-    if(!strcmp(cmd,"FolderSync")) return req.FolderSync(deviceid, xml);
-     if(!strcmp(cmd,"Search")) return req.Search();
-     if(!strcmp(cmd,"Settings")) return req.Settings();
-     if(!strcmp(cmd,"Options")) return req.Options();
-     if(!strcmp(cmd,"Provision")) return req.Provision();
-     if(!strcmp(cmd,"Header")) return req.Header();
+    if(!strcmp(cmd,"FolderSync"))return (unsigned char*) req.FolderSync(deviceid, (char*) xml);
+    if(!strcmp(cmd,"Sync")) return (unsigned char*)req.Sync(deviceid, xml);
+     if(!strcmp(cmd,"Search")) return (unsigned char*)req.Search(deviceid, xml);
+     if(!strcmp(cmd,"Settings")) return (unsigned char*)req.Settings();
+     if(!strcmp(cmd,"Options")) return (unsigned char*)req.Options();
+     if(!strcmp(cmd,"Provision")) return (unsigned char*) req.Provision();
+     if(!strcmp(cmd,"Header")) return (unsigned char*)req.Header();
 
-     return "no";
+     return (unsigned char*) "no";
 }
 
 
@@ -39,14 +41,14 @@ char *answ( char *cmd, char* deviceid,char* xml)
 extern char **environ;
 int main()
 {
-
+unsigned char* server_response;
 char *len_;
 int len,count;
 char *postdata;
 char *cmd;
 char *deviceid;
 char *username;
-char *xml;
+unsigned char *xml;
 cmd=(char*)malloc(sizeof(char*));
 char *amethod;
 wbpair response;
@@ -84,6 +86,7 @@ else
  imap_auth(postdata);
 
 
+
 amethod=getenv("REQUEST_METHOD");
 if(amethod==NULL) amethod="OPTIONS";
 #ifdef DEBUGLOG
@@ -102,9 +105,9 @@ if( !strcmp(amethod,"OPTIONS"))
 
 // there are only headers here, no body
 
-cout << answ("Options", deviceid,NULL)<<"\r\n";
+cout << answ( (char*) "Options", deviceid,NULL)<<"\r\n";
 
-as_log(answ("Options",deviceid,NULL));
+as_log((char*) answ(  "Options",deviceid,NULL));
 
 }
 
@@ -128,13 +131,17 @@ if( !strcmp(amethod,"POST"))
 
  poststring[count]=fgetc(stdin);
  }
+
  count++;
-poststring[count]='\0';
+ poststring[count]='\0';
 
 
-// as_log_data((char*) poststring);
-xml=(char*) wb2xml(poststring,count);
-as_log(xml);
+//fgets( (char*)poststring, len + 1, stdin);
+
+ as_log_data((char*) poststring,count);
+xml= wb2xml(poststring,count);
+as_log("decoded string:");
+as_log((char*)xml);
 
  postdata=getenv("QUERY_STRING");
 #ifdef DEBUGLOG
@@ -158,24 +165,40 @@ as_log(username);
 as_log(cmd);
 #endif // DEBUGLOG
 
-//cout << "Status:200 OK\n" ;
+//
 
-as_log("answer:");
-//log the answer as xml
-as_log(answ(cmd,deviceid,xml));
-cout<< answ("Header",deviceid,xml);
-response= xml2wb(answ(cmd,deviceid,xml));
-cout << "Content-Length: " << response.len <<"\r\n";
+as_log("request:");
+//log the req as xml
+as_log((char*) xml);
+//cout<< answ("Header",deviceid,xml);
+server_response=answ(cmd,deviceid,xml);
+
+as_log("server response:");
+as_log((char*)server_response);
+response= xml2wb(server_response);
+// read wbxml from file
+
+//response.str=wbxml;
+//as_log_data((char*)response.str, response.len);
+
+ time_t now = time(0);
+//as_log((char*)response.str);
+cout << "Server: Apache\r\n"
+          "X-MS-PolicyKey: 0\r\n"
+    "Accept-Encoding: gzip\r\n"
+    "MS-Server-ActiveSync: 15.1\r\n"
+    "MS-ASProtocolVersions: 2.5,12.0,12.1,14.0,14.1\r\n";
+
+cout << "Date:"  << ctime(&now)  ;
 cout << "Content-type: application/vnd.ms-sync.wbxml\r\n" ;
+cout << "Content-Length: " << response.len <<"\r\n";
 cout <<"\r\n";
 
-fwrite(response.str, sizeof(WB_UTINY), response.len, stdout);
-cout <<"\r\n";
 
-//if(!strcmp(cmd,"FolderSync"))
-    {
-    as_log_data((char *)response.str,response.len);
-    }
+fwrite( response.str, sizeof(WB_UTINY) , response.len, stdout);
+
+
+
 }
 }
 }

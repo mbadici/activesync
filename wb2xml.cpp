@@ -1,8 +1,8 @@
-#include <wbxml.h>
-#include <wbxml_conv.h>
-#include <wbxml_charset.h>
-
-
+#include "/usr/local/include/libwbxml-1.0/wbxml/wbxml.h"
+//nclude "/usr/local/include/
+//#include <wbxml_charset.h>
+#include <stdio.h>
+#define INPUT_BUFFER_SIZE 1000
 static WBXMLLanguage get_lang(const WB_TINY *lang)
 {
 //#if defined( WBXML_SUPPORT_WML )
@@ -101,26 +101,34 @@ static WBXMLLanguage get_lang(const WB_TINY *lang)
 
 
 unsigned char* wb2xml(WB_UTINY *wb, int wbxml_len){
-  WB_UTINY *xml = NULL;
-    WB_LONG total = 0;
-    WB_ULONG xml_len ;
+
+   WB_UTINY *wbxml = NULL, *output = NULL, *xml = NULL;
+    WB_LONG count = 0, total = 0;
+    WB_ULONG xml_len = 1;
+
     WBXMLError ret = WBXML_OK;
-//    WB_UTINY input_buffer[INPUT_BUFFER_SIZE + 1];
-    WBXMLGenXMLParams params;
-   //xml=(WB_UTINY *)malloc(100);
-    /* Init Default Parameters */
-    params.lang = WBXML_LANG_AIRSYNC;
-    params.gen_type = WBXML_GEN_XML_INDENT;
-    params.indent = 1;
-    params.keep_ignorable_ws = FALSE;
+    WB_UTINY input_buffer[INPUT_BUFFER_SIZE + 1];
+    WBXMLConvWBXML2XML *conv = NULL;
 
-     total= strlen((const char*)wb);
-
-     ret = wbxml_conv_wbxml2xml_withlen(wb, wbxml_len, &xml, &xml_len, &params);
-    if (ret != WBXML_OK) {
-        fprintf(stderr, "wbxml2xml failed: %s\n", wbxml_errors_string(ret));
-    return (unsigned char*)wbxml_errors_string(ret) ;
+    ret = wbxml_conv_wbxml2xml_create(&conv);
+    if (ret != WBXML_OK)
+    {
+     fprintf(stderr, "conv  failed: %s\n", wbxml_errors_string(ret));
+      exit;
     }
+     wbxml_conv_wbxml2xml_enable_preserve_whitespaces(conv);
+     wbxml_conv_wbxml2xml_set_language(conv, WBXML_LANG_ACTIVESYNC);
+     wbxml_conv_wbxml2xml_set_gen_type(conv, WBXML_GEN_XML_CANONICAL);
+
+wbxml_conv_wbxml2xml_set_charset(conv, WBXML_CHARSET_UTF_8);
+
+      ret = wbxml_conv_wbxml2xml_run(conv,(unsigned char*) wb, (WB_LONG)wbxml_len, &xml, &xml_len);
+    if (ret != WBXML_OK) {
+
+     fprintf(stderr, "wbxml2xml failed: %s\n", wbxml_errors_string(ret));
+
+        }
+
     else {
         /* fprintf(stderr, "wbxml2xml succeded: \n%s\n", xml); */
      //   fprintf(stderr, "wbxml2xml succeded\n");

@@ -5,13 +5,14 @@
 class command
 {
     public:
-        char* Header();
-        char* Settings();
-        char* Options();
-        char* FolderSync(char* device, char* poststring);
-        char* Provision();
-        char* Search();
-        void Sync();
+       unsigned char* Header();
+       unsigned  char* Settings();
+       unsigned char* Options();
+       unsigned  char* FolderSync(char* device,  char* poststring);
+       unsigned char* Provision();
+       unsigned char* Search(char* device, unsigned char* poststring);
+       unsigned  char* Sync(char* device,  unsigned char* poststring);
+       unsigned char* Sendmail();
 
     protected:
 

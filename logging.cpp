@@ -35,7 +35,7 @@ ofstream logfile;
     }
   }
   else{ logfile <<"null string";}
-  logfile.write("\n",2);
+
 
   logfile.close();
 

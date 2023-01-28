@@ -15,10 +15,11 @@
 					<Add option="-g" />
 					<Add directory="requests" />
 					<Add directory="./" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="curl" />
-					<Add library="libwbxml2" />
+					<Add library="sqlite3" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -30,6 +31,7 @@
 					<Add option="-O2" />
 					<Add directory="requests" />
 					<Add directory="./" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -40,12 +42,17 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add library="/usr/local/lib/libwbxml2.so" />
+		</Linker>
 		<Unit filename="auth.cpp" />
 		<Unit filename="auth.h" />
 		<Unit filename="cmd.h" />
 		<Unit filename="cmd.parser.h" />
 		<Unit filename="command.cpp" />
 		<Unit filename="command.h" />
+		<Unit filename="include/gen_db.h" />
+		<Unit filename="include/sqlite_db.h" />
 		<Unit filename="logging.cpp" />
 		<Unit filename="logging.h" />
 		<Unit filename="mailbox">
@@ -56,6 +63,9 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="requests/method.cpp" />
 		<Unit filename="requests/method.h" />
+		<Unit filename="src/abstract_db.cpp" />
+		<Unit filename="src/gen_db.cpp" />
+		<Unit filename="src/sqlite_db.cpp" />
 		<Unit filename="state.cpp" />
 		<Unit filename="state.h" />
 		<Unit filename="wb2xml.cpp" />

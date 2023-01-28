@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1613857709 source:/home/mihai/projects/activesync/activesync/main.cpp
+1674927874 source:/home/mihai/projects/activesync/activesync/main.cpp
 	<iostream>
 	<string>
 	<fstream>
@@ -11,6 +11,7 @@
 	"wb2xml.h"
 	"command.h"
 	<wbxml.h>
+	<ctime>
 	"logging.h"
 
 1598772607 source:/home/mihai/projects/activesync/activesync/requests/method.cpp
@@ -27,52 +28,120 @@
 
 1604166228 /home/mihai/projects/activesync/activesync/auth.h
 
-1613942846 source:/home/mihai/projects/activesync/activesync/command.cpp
+1674913306 source:/home/mihai/projects/activesync/activesync/command.cpp
 	"command.h"
 	<stdio.h>
 	<iostream>
 	<ctime>
 	"state.h"
+	"../rapidxml-1.13/rapidxml.hpp"
+	"logging.h"
 
-1613942846 /home/mihai/projects/activesync/activesync/command.h
+1674585733 /home/mihai/projects/activesync/activesync/command.h
 
 1608384317 source:/home/mihai/projects/activesync/activesync/xml2wb.c
 	<wbxml.h>
 	<wbxml_conv.h>
 
-1611079088 /home/mihai/projects/activesync/activesync/xml2wb.h
+1674563271 /home/mihai/projects/activesync/activesync/xml2wb.h
 	<wbxml.h>
 
-1611493301 source:/home/mihai/projects/activesync/activesync/xml2wb.cpp
-	<wbxml.h>
-	<wbxml_conv.h>
+1674929750 source:/home/mihai/projects/activesync/activesync/xml2wb.cpp
 	<iostream>
 	"logging.h"
+	"/usr/local/include/libwbxml-1.0/wbxml/wbxml_conv.h"
 	"xml2wb.h"
 
-1610312155 source:/home/mihai/projects/activesync/activesync/wb2xml.cpp
-	<wbxml.h>
-	<wbxml_conv.h>
-	<wbxml_charset.h>
+1674672384 source:/home/mihai/projects/activesync/activesync/wb2xml.cpp
+	"/usr/local/include/libwbxml-1.0/wbxml/wbxml.h"
+	<stdio.h>
 
 1610218497 /home/mihai/projects/activesync/activesync/wb2xml.h
 	<wbxml.h>
 
-1613857709 source:/home/mihai/projects/activesync/activesync/logging.cpp
+1674830904 source:/home/mihai/projects/activesync/activesync/logging.cpp
 	<iostream>
 	<string>
 	<fstream>
 
-1611078252 /home/mihai/projects/activesync/activesync/logging.h
+1674561952 /home/mihai/projects/activesync/activesync/logging.h
 
 1612708035 source:/home/mihai/projects/activesync/activesync/mailbox.cpp
 
-1613843201 source:/home/mihai/projects/activesync/activesync/state.cpp
+1674226099 source:/home/mihai/projects/activesync/activesync/state.cpp
 	"state.h"
 	<iostream>
 	<string.h>
 	<string>
 	<fstream>
+	<sstream>
+	"include/gen_db.h"
+	"logging.h"
 
-1613770159 /home/mihai/projects/activesync/activesync/state.h
+1672604904 /home/mihai/projects/activesync/activesync/state.h
+	<string>
+
+1648724692 source:/home/mihai/projects/activesync/activesync/src/abstract_db.cpp
+	"abstract_db.h"
+
+1648724796 /home/mihai/projects/activesync/activesync/include/abstract_db.h
+
+1673451736 source:/home/mihai/projects/activesync/activesync/src/sqlite_db.cpp
+	<sqlite3.h>
+	<iostream>
+	"sqlite_db.h"
+	"logging.h"
+
+1672954458 /home/mihai/projects/activesync/activesync/include/sqlite_db.h
+	<sqlite3.h>
+	<string>
+
+1674225965 source:/home/mihai/projects/activesync/activesync/src/gen_db.cpp
+	"gen_db.h"
+	<iostream>
+	"include/sqlite_db.h"
+
+1674226079 /home/mihai/projects/activesync/activesync/include/gen_db.h
+	<string>
+
+1670443160 /home/mihai/projects/activesync/activesync/include/dbs.h
+	<sqlite3.h>
+	<string>
+
+1670857511 source:/home/mihai/projects/activesync/activesync/src/dbs.cpp
+	<sqlite3.h>
+	<iostream>
+	"dbs.h"
+
+1672954458 /home/mihai/projects/activesync/activesync//include/sqlite_db.h
+	<sqlite3.h>
+	<string>
+
+1674561952 /home/mihai/projects/activesync/activesync//logging.h
+
+1242168378 /home/mihai/projects/activesync/activesync/rapidxml-1.13/rapidxml.hpp
+	<cstdlib>
+	<cassert>
+	<new>
+	<exception>
+
+1674409965 /usr/local/include/libwbxml-1.0/wbxml/wbxml_conv.h
+	"wbxml.h"
+
+1674409965 /usr/local/include/libwbxml-1.0/wbxml/wbxml.h
+	"wbxml_config.h"
+	"wbxml_defines.h"
+	"wbxml_errors.h"
+	"wbxml_conv.h"
+
+1674450754 /usr/local/include/libwbxml-1.0/wbxml/wbxml_config.h
+
+1674409965 /usr/local/include/libwbxml-1.0/wbxml/wbxml_defines.h
+	<e32def.h>
+	<stdlib.h>
+	<string.h>
+
+1674409965 /usr/local/include/libwbxml-1.0/wbxml/wbxml_errors.h
+	"wbxml_config.h"
+	"wbxml_defines.h"
 

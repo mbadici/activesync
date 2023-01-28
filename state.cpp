@@ -3,76 +3,33 @@
 #include <string.h>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include "include/gen_db.h"
+#include "logging.h"
+//#include "include/sqlite_db.h"
 using namespace std;
 
+gen_db status;
 
-int state::rd(char *device,char *key){
-     ifstream file("/home/mihai/projects/activesync/activesync/state");
-     if (file.is_open()) {
-                            char devandkey[255];
-                            strcpy(devandkey,device);
-                            strcat(devandkey," ");
-                            strcat(devandkey,key);
-                            string line;
-                            int i;
-                            while (getline(file, line)) {
-                            size_t found = line.find(device);
-                            if (found != string::npos)
-                            {
-                                sscanf(line.c_str(),"%*s%*s%d", &i);
-                                file.close();
-                                return i;
+int state::pull(string device,string keyname){
 
-                            }
 
-                            file.close();
-                            return -1;
+    int i;
+    int res;
+	res=status.pull(device,keyname);
+ //   istringstream(res.col_result[1]) >>i;
 
-                          }
+    return res;
 
-     }
-   return -2;
-}
+    }
 
-int state::wr(char *device,char *keyname, int key){
+int state::push(string device,string keyname, int key){
+    string pSQL;
 
- fstream rfile("/home/mihai/projects/activesync/activesync/state",std::ios::out | std::ios::app);
- fstream tmpfile("/home/mihai/projects/activesync/activesync/state.tmp",std::ios::out | std::ios::app);
-char devandkey[255];
-strcpy(devandkey,device);
-strcat(devandkey," ");
-strcat(devandkey,keyname);
-if (rfile.is_open()) {
-                            string line;
-                            int i=0;
-                            while ( getline(rfile,line)) {
-                            size_t found = line.find(devandkey);
-                            if (found != string::npos) {
+     status.push(device,keyname,key);
 
-                            i=1;
-                            line.assign(devandkey);
-                            line = line+" "+std::to_string(key);
+            return 0;
 
-                            tmpfile << line << endl;
-                            }
-                            else {
-                                    tmpfile << line <<endl;
 
-                            }
-                          }
-                        if(i==0){
-                                    line.assign(device);
-                                    line.append(" ");
-                                    line.append(keyname);
-                                    line = line+" "+std::to_string(key);
-                                    ofstream rfile("/home/mihai/projects/activesync/activesync/state",ios::app);
-                                    rfile << line << endl;
-                                    rfile.close(); tmpfile.close();
-                        }
-                        else {
-                                rfile.close(); tmpfile.close();
-                                rename("/home/mihai/projects/activesync/activesync/state.tmp","/home/mihai/projects/activesync/activesync/state");
-     }                  }
-   return -2;
+	}
 
-}

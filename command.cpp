@@ -3,28 +3,36 @@
 #include <iostream>
 #include <ctime>
 #include "state.h"
+#include "../rapidxml-1.13/rapidxml.hpp"
+#include "logging.h"
+//#include "../rapidxml/writer.h"
+//#include "../rapidxml/stringbuffer.h"
 using namespace std;
-   char* answer;
+using namespace rapidxml;
+unsigned   char* answer;
+
    string ans;
     state db;
     //ctor
-char* command::Header(){
-             answer=(char*) "Server: Apache\r\n"
+unsigned char* command::Header(){
+             answer=(unsigned char*) "Server: Apache\r\n"
              "MS-ASProtocolCommands: Sync,SendMail,SmartForward,SmartReply,GetAttachment,GetHierarchy,"
           "CreateCollection,DeleteCollection,MoveCollection,FolderSync,FolderCreate,"
           "FolderDelete,FolderUpdate,MoveItems,GetItemEstimate,MeetingResponse,Search,"
           "Settings,Ping,ItemOperations,ResolveRecipients,ValidateCert\r\n"
         "MS-Server-ActiveSync: 12.1\r\n";
+ //       answer="";
            return answer;
 }
 
-char* command::Options(){
+unsigned char* command::Options(){
 
      time_t now = time(0);
 
    // convert now to string form
-        // string dt = ctime(&now);
-         answer= u8"Server: Apache\r\n"
+         string dt = ctime(&now);
+         ans="";
+         ans= "Server: Apache\r\n"
           "MS-Server-ActiveSync: 14.00.0536.000\r\n"
           "MS-ASProtocolVersions: 2.0,2.1,2.5,12.0,12.1\r\n"
           "MS-ASProtocolCommands: Sync,SendMail,SmartForward,SmartReply,GetAttachment,GetHierarchy,"
@@ -32,26 +40,25 @@ char* command::Options(){
           "FolderDelete,FolderUpdate,MoveItems,GetItemEstimate,MeetingResponse,Search,"
           "Settings,Ping,ItemOperations,ResolveRecipients,ValidateCert\r\n"
           "Public: OPTIONS,POST\r\n"
-          "Content-type: text/html; charset=UTF-8\r\nDate:"
-          //ans=ans+dt+
+          "Content-type: text/html; charset=UTF-8\r\nDate:";
+          ans=ans+dt+
           "Content-Length: 0\r\n";
-           //return((char *)ans.c_str());
-           return answer;
+           return((unsigned char *)ans.c_str());
+          // return answer;
        }
 
 
-char* command::Settings(){
+unsigned char* command::Settings(){
 
 
 
-          answer =(char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+          answer =(unsigned char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
           "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
           "<Settings xmlns=\"http://synce.org/formats/airsync_wm5/settings\">"
           "<Status>1</Status>"
           "<Oof>"
-  //        "<Status/>"
           "<Get>"
-          "<OofState>1</OofState>"
+          "<OofState>0</OofState>"
           "</Get>"
           "</Oof>"
           "</Settings>";
@@ -63,11 +70,11 @@ char* command::Settings(){
 
 }
 
-   char* command::Provision(){
+   unsigned char* command::Provision(){
 
 
 
-          answer =(char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+          answer =(unsigned char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
           "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
           "<Provision xmlns=\"uri:Provision\" xmlns:Settings=\"uri:Settings\">"
           "<DeviceInformation xmlns=\"uri:Settings\">"
@@ -84,6 +91,7 @@ char* command::Settings(){
            "</Policy>"
            "</Policies>"
            "</Provision>";
+ as_log((char*)answer);
 
       return answer;
 
@@ -92,159 +100,149 @@ char* command::Settings(){
 
 
 
-char* command::FolderSync(char* device,  char* poststring){
-      int key;
-       if((key=db.rd(device,"FolderSync")) <0)
+unsigned char* command::FolderSync(char* device, char* xml){
+      int key=0;
+      int count=3;
+      as_log("passed xml:");
+      as_log((char*)xml);
+      as_log("end xml");
+xml_document<>doc;    // character type defaults to char
+doc.parse<0> (xml);    // 0 means default parse flags
+    rapidxml::xml_node<> *root = doc.first_node("FolderSync");
+   rapidxml::xml_node<> *child = root->first_node("SyncKey");
+  as_log(child->value());
+  key=atoi(child->value());
+   string add="";
+
+
+      if((key==0) )
        {
            //first sync
-           key=1;
-           db.wr(device,"FolderSync",key);
-       }
-       else
-       {
+
+
+       //create the folder structure list (should be read from mailbox)
+
+       add="<Add>"
+      "<ServerId>Calendar</ServerId>"
+      "<ParentId>0</ParentId>"
+      "<DisplayName>Calendar</DisplayName>"
+      "<Type>8</Type>"
+      "</Add>"
+       "<Add>"
+      "<ServerId>Inbox</ServerId>"
+      "<ParentId>0</ParentId>"
+      "<DisplayName>Inbox</DisplayName>"
+      "<Type>2</Type>"
+    "</Add>"
+    "<Add>"
+      "<ServerId>Notes::Syncroton</ServerId>"
+      "<ParentId>0</ParentId>"
+      "<DisplayName>Notes</DisplayName>"
+      "<Type>10</Type>"
+      "</Add>";
+
+
            //already sinced
-           db.wr(device,"FolderSync",key);
+ //      if(key==0)
 
 
-       }
-       answer =(char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-        "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
-  "<FolderSync>"
-      " <Status>1</Status>"
-      " <SyncKey>1</SyncKey>"
-      " <Changes>"
-      "   <Count>1</Count>"
-      "   <Add>"
-      "   <ServerId>Inbox</ServerId>"
-      "   <ParentId>0</ParentId>"
-      "   <Name>Inbox</Name>"
-      "  </Add>"
-      " </Changes>"
+         //key++;
+         db.push(device,"FolderSync",key);
+
+
+
+           ans= "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+           "<!DOCTYPE ActiveSync PUBLIC \"-//MICROSOFT//DTD ActiveSync//EN\" \"http://www.microsoft.com/\">"
+       "<FolderSync xmlns=\"uri:FolderHierarchy\" >"
+       "<Status>1</Status>"
+       "<SyncKey>1</SyncKey>"
+       "<Changes>"
+       "<Count>2</Count>"
+       "<Add>"
+       "<ServerId>Calendar</ServerId>"
+       "<ParentId>0</ParentId>"
+      "<DisplayName>Calendar</DisplayName>"
+       "<Type>8</Type>"
+       "</Add>"
+       "<Add>"
+       "<ServerId>Inbox</ServerId>"
+       "<ParentId>0</ParentId>"
+       "<DisplayName>Inbox</DisplayName>"
+       "<Type>2</Type>"
+       "</Add>"
+
+       "</Changes>"
+
+       "</FolderSync>";
+}
+else{
+        {  count=0; add="";
+         ans="";
+  key=1;
+         db.push(device,"FolderSync",key);
+
+        ans= ans+ "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+          "<!DOCTYPE ActiveSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\" \"http://www.microsoft.com/\">"
+  "<FolderSync xmlns=\"uri:FolderHierarchy\" xmlns:Syncroton=\"uri:Syncroton\" xmlns:Internal=\"uri:Internal\" >"
+  "<Status>'1'</Status>"
+      "<SyncKey>'"+to_string(key)+"'</SyncKey>"
+      "<Changes>"
+      "<Count>0</Count>"
+
+    "</Changes>"
+
    "</FolderSync>";
 
-      return answer;
+
+}
+}
+
+      return ((unsigned char*)ans.c_str());
 
 
 }
 
 
-char* command::Search(){
+unsigned char* command::Sync(char* device,  unsigned char* poststring){
 
-  /*        answer =(char*)"<?xml version=\"1.0\"?>"
-    "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\" \"http://www.microsoft.com/\">"
+     answer =(unsigned char*)"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+        "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
+  "<Sync>"
+    "    <Collections>"
+    "  <Collection>"
+    "   <Class>Email</Class>"
+    "  <SyncKey>1</SyncKey>"
+    " <CollectionId>Inbox</CollectionId>"
+    " <Status>1</Status>"
+    " </Collection>"
+    " </Collections>"
+   "</Sync>";
+
+      return answer;
+
+
+
+
+}
+
+
+
+unsigned char* command::Search(char* device, unsigned char* poststring){
+
+
+
+ answer =(unsigned char*) "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+        "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\"  \"http://www.microsoft.com/\">"
+
     "<Search xmlns=\"http://synce.org/formats/airsync_wm5/search\">"
     "<Status>1</Status>"
     "<Response>"
     "<Store>"
     "<Status>1</Status>"
     "<Result>"
-    "<Class xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">Calendar</Class>"
-    "<LongId>RgAAAADi22n%2b5K6eSoH%2bdzl9mrUlBwAiJdrFeosuS5FQPukoeMhpAH7xbHCsAAAiJdrFeosuS5FQPukoeMhpAH7zrksUAAAP</LongId>"
-    "<CollectionId xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">3</CollectionId>"
-    "<Properties>"
-     "<Timezone xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">iP///0YATABFACAAUwB0AGEAbgBkAGEAcgBkACAAVABpAG0AZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAFAAQAAAAAAAAAAAAAAEYATABFACAARABhAHkAbABpAGcAaAB0ACAAVABpAG0AZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAFAAMAAAAAAAAAxP///w==</Timezone>"
-     "<DtStamp xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">20201226T112208Z</DtStamp>"
-     "<StartTime xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">20201226T090000Z</StartTime>"
-     "<Subject xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">hfjjf</Subject>"
-     "<UID xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">040000008200E00074C5B7101A82E00800000000F4BD10E469BEC901000000000000000010000000449579D4A72EED4EB3F70D04913F0277</UID>"
-     "<OrganizerName xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">maemo</OrganizerName>"
-     "<OrganizerEmail xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">maemo@test.local</OrganizerEmail>"
-     "<Attendees xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">"
-      "<Attendee>"
-       "<Email>maemo@test.local</Email>"
-       "<Name>maemo</Name>"
-       "<AttendeeStatus>0</AttendeeStatus>"
-       "<AttendeeType>1</AttendeeType>"
-      "</Attendee>"
-     "</Attendees>"
-     "<Location xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">meetingroom  testi</Location>"
-     "<EndTime xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">20090417T100000Z</EndTime>"
-     "<Body xmlns=\"http://synce.org/formats/airsync_wm5/airsyncbase\">"
-      "<Type>2</Type>"
-      "<EstimatedDataSize>365</EstimatedDataSize>"
-      "<Data>&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;"
-      "&lt;meta name=&quot;Generator&quot; content=&quot; Exchange Server&quot;&gt;"
-        "&lt;!-- converted from text --&gt;"
-    "&lt;style&gt;.EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left: #800000 2px solid; }&lt;/style&gt;&lt;/head&gt;"
-    "&lt;body&gt;"
-    "&lt;font size=&quot;2&quot;&gt;&lt;div class=&quot;PlainText&quot;&gt;&amp;nbsp;&lt;/div&gt;&lt;/font&gt;"
-    "&lt;/body&gt;"
-    "&lt;/html&gt;</Data>"
-     "</Body>"
-     "<Sensitivity xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">0</Sensitivity>"
-     "<BusyStatus xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">0</BusyStatus>"
-     "<AllDayEvent xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">0</AllDayEvent>"
-     "<Reminder xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">15</Reminder>"
-     "<MeetingStatus xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">5</MeetingStatus>"
-     "<NativeBodyType xmlns=\"http://synce.org/formats/airsync_wm5/airsyncbase\">1</NativeBodyType>"
-    "</Properties>"
-   "</Result>"
-   "<Result>"
-    "<Class xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">Calendar</Class>"
-    "<LongId>RgAAAADi22n%2b5K6eSoH%2bdzl9mrUlBwAiJdrFeosuS5FQPukoeMhpAH7xbHCsAAAiJdrFeosuS5FQPukoeMhpAH7zrksSAAAP</LongId>"
-    "<CollectionId xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">3</CollectionId>"
-    "<Properties>"
-     "<Timezone xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">iP///0YATABFACAAUwB0AGEAbgBkAGEAcgBkACAAVABpAG0AZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAFAAQAAAAAAAAAAAAAAEYATABFACAARABhAHkAbABpAGcAaAB0ACAAVABpAG0AZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAFAAMAAAAAAAAAxP///w==</Timezone>"
-     "<DtStamp xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">20090417T105620Z</DtStamp>"
-     "<StartTime xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">20090417T110000Z</StartTime>"
-     "<Subject xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">tent</Subject>"
-     "<UID xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">040000008200E00074C5B7101A82E008000000002E1A5BA069BEC901000000000000000010000000F1BB45467D72B44F822E9686F1D18ED4</UID>"
-     "<OrganizerName xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">maemo</OrganizerName>"
-     "<OrganizerEmail xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">maemo@test.local</OrganizerEmail>"
-     "<Attendees xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">"
-      "<Attendee>"
-       "<Email>meetingroomtest@test.local</Email>"
-       "<Name>meetingroom  testi</Name>"
-       "<AttendeeStatus>0</AttendeeStatus>"
-       "<AttendeeType>3</AttendeeType>"
-      "</Attendee>"
-      "<Attendee>"
-       "<Email>maemo@test.local</Email>"
-       "<Name>maemo</Name>"
-       "<AttendeeStatus>0</AttendeeStatus>"
-       "<AttendeeType>1</AttendeeType>"
-      "</Attendee>"
-     "</Attendees>"
-     "<Location xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">meetingroom  testi</Location>"
-     "<EndTime xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">20090417T120000Z</EndTime>"
-     "<Body xmlns=\"http://synce.org/formats/airsync_wm5/airsyncbase\">"
-      "<Type>2</Type>"
-     " <EstimatedDataSize>365</EstimatedDataSize>"
-      "<Data>&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;"
-   "&lt;meta name=&quot;Generator&quot; content=&quot;Microsoft Exchange Server&quot;&gt;"
-    "&lt;!-- converted from text --&gt;"
-    "&lt;style&gt;.EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left: #800000 2px solid; }&lt;/style&gt;&lt;/head&gt;"
-    "&lt;body&gt;"
-    "&lt;font size=&quot;2&quot;&gt;&lt;div class=&quot;PlainText&quot;&gt;&amp;nbsp;&lt;/div&gt;&lt;/font&gt;"
-     "&lt;/body&gt;"
-      "&lt;/html&gt;</Data>"
-     "</Body>"
-     "<Sensitivity xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">0</Sensitivity>"
-     "<BusyStatus xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">0</BusyStatus>"
-     "<AllDayEvent xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">0</AllDayEvent>"
-     "<Reminder xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">15</Reminder>"
-     "<MeetingStatus xmlns=\"http://synce.org/formats/airsync_wm5/calendar\">5</MeetingStatus>"
-     "<NativeBodyType xmlns=\"http://synce.org/formats/airsync_wm5/airsyncbase\">1</NativeBodyType>"
-    "</Properties>"
-   "</Result>"
-   "<Range>0-1</Range>"
-   "<Total>19</Total>"
-  "</Store>"
-  "</Response>"
-   "</Search>";
-
-*/
- answer =(char*)"<?xml version=\"1.0\"?>"
-    "<!DOCTYPE AirSync PUBLIC \"-//AIRSYNC//DTD AirSync//EN\" \"http://www.microsoft.com/\">"
-    "<Search xmlns=\"http://synce.org/formats/airsync_wm5/search\">"
-    "<Status>1</Status>"
-    "<Response>"
-    "<Store>"
-    "<Status>1</Status>"
-    "<Result>"
-      "<Class xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">Contacts/Class>"
-    "<LongId>RgAAAADi22n%2b5K6eSoH%2bdzl9mrUlBwAiJdrFeosuS5FQPukoeMhpAH7xbHCsAAAiJdrFeosuS5FQPukoeMhpAH7zrksSAAAP</LongId>"
-    "<CollectionId xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">3</CollectionId>"
+      "<Class xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">Contacts</Class>"
+  //  "<LongId>RgAAAADi22n%2b5K6eSoH%2bdzl9mrUlBwAiJdrFeosuS5FQPukoeMhpAH7xbHCsAAAiJdrFeosuS5FQPukoeMhpAH7zrksSAAAP</LongId>"
+    "<CollectionId xmlns=\"http://synce.org/formats/airsync_wm5/airsync\">3 </CollectionId>"
     "<Properties>"
     "<displayname> costel </displayname>"
     "</Properties>"
@@ -253,9 +251,17 @@ char* command::Search(){
   "</Store>"
   "</Response>"
    "</Search>";
-       //     cout << answer <<"\n";
+     as_log( (char*) answer);
       return answer;
 
 
 }
 
+
+unsigned char* command::Sendmail(){
+
+answer = (unsigned char*) "s\r\n";
+return answer;
+
+
+}

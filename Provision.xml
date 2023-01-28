@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE AirSync PUBLIC "-//AIRSYNC//DTD AirSync//EN"  "http://www.microsoft.com/">
+<Provision xmlns="uri:Provision" xmlns:Settings="uri:Settings">
+<DeviceInformation xmlns="uri:Settings"><Set><Model>SM-M215F</Model>
+
+           <FriendlyName>SM-M215F</FriendlyName>
+           <OS>Android 10</OS>
+           <UserAgent>Android-Mail/2020.11.29.346182102.Release</UserAgent>
+           </Set>
+           </DeviceInformation>
+           <Policies>
+           <Policy>
+           <PolicyType>MS-EAS-Provisioning-WBXML</PolicyType>
+           </Policy>
+           </Policies>
+           </Provision>
+
